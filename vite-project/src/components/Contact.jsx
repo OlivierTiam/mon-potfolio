@@ -1,15 +1,25 @@
 // src/components/Contact.jsx
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, Loader } from 'lucide-react';
+import emailjs from 'emailjs-com';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    from_email: '',
     subject: '',
     message: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+  
+  const formRef = useRef();
+
+  const showNotification = (message, type = 'success') => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => setNotification({ show: false, message: '', type: '' }), 5000);
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -20,10 +30,26 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Ici tu intégreras ton service d'envoi d'emails (EmailJS, Netlify Forms, etc.)
-    console.log('Formulaire envoyé:', formData);
-    alert('Message envoyé ! Je te recontacte rapidement.');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setIsLoading(true);
+
+    // Remplace ces valeurs par les tiennes depuis ton compte EmailJS
+    const serviceID = 'service_tr1g65b';
+    const templateID = 'template_mxgivtp';
+    const userID = 'RULlDWUTgxIHwYF4j';
+
+    emailjs.sendForm(serviceID, templateID, formRef.current, userID)
+      .then((result) => {
+        console.log('Email envoyé avec succès:', result.text);
+        showNotification('Message envoyé ! Je te recontacte rapidement.', 'success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      })
+      .catch((error) => {
+        console.error('Erreur envoi email:', error.text);
+        showNotification('Erreur lors de l\'envoi. Réessaie ou contacte-moi directement.', 'error');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const contactInfo = [
@@ -31,7 +57,7 @@ const Contact = () => {
       icon: <Mail size={24} />,
       label: 'Email',
       value: 'oltiam36@gmail.com',
-      link: 'oltiam36@gmail.com'
+      link: 'mailto:oltiam36@gmail.com'
     },
     {
       icon: <Phone size={24} />,
@@ -43,7 +69,7 @@ const Contact = () => {
       icon: <MapPin size={24} />,
       label: 'Localisation',
       value: 'Douala, Cameroun',
-      link: '#'
+      link: 'https://www.google.com/maps/place/Douala,+Cameroun'
     }
   ];
 
@@ -52,25 +78,41 @@ const Contact = () => {
       icon: <Github size={24} />,
       name: 'GitHub',
       url: 'https://github.com/oliviertiam',
-      color: 'hover:text-gray-700'
+      color: 'hover:text-gray-300'
     },
     {
       icon: <Linkedin size={24} />,
       name: 'LinkedIn',
       url: 'https://linkedin.com/in/oliviertiam',
-      color: 'hover:text-blue-600'
+      color: 'hover:text-blue-400'
     },
     {
       icon: <Twitter size={24} />,
       name: 'Twitter',
       url: 'https://twitter.com/oliviertiam',
-      color: 'hover:text-blue-400'
+      color: 'hover:text-blue-300'
     }
   ];
 
   return (
-    <section id="contact" className="py-20 bg-gray-900">
-      <div className="container mx-auto px-4 max-w-6xl">
+    <section id="contact" className="py-20 bg-gray-900 relative overflow-hidden">
+      {/* Notification */}
+      {notification.show && (
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
+          className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg font-semibold ${
+            notification.type === 'success' 
+              ? 'bg-green-500 text-white' 
+              : 'bg-red-500 text-white'
+          }`}
+        >
+          {notification.message}
+        </motion.div>
+      )}
+
+      <div className="container mx-auto px-4 max-w-6xl relative z-10">
         {/* Titre */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -165,7 +207,7 @@ const Contact = () => {
             transition={{ duration: 0.6 }}
             className="bg-gray-800 p-8 rounded-2xl shadow-2xl"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-white mb-2 font-medium">
@@ -183,14 +225,14 @@ const Contact = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-white mb-2 font-medium">
+                  <label htmlFor="from_email" className="block text-white mb-2 font-medium">
                     Email *
                   </label>
                   <input
                     type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
+                    id="from_email"
+                    name="from_email"
+                    value={formData.from_email}
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors"
@@ -233,12 +275,22 @@ const Contact = () => {
 
               <motion.button
                 type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 flex items-center justify-center gap-2"
+                disabled={isLoading}
+                whileHover={{ scale: isLoading ? 1 : 1.02 }}
+                whileTap={{ scale: isLoading ? 1 : 0.98 }}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Send size={20} />
-                Envoyer le message
+                {isLoading ? (
+                  <>
+                    <Loader size={20} className="animate-spin" />
+                    Envoi en cours...
+                  </>
+                ) : (
+                  <>
+                    <Send size={20} />
+                    Envoyer le message
+                  </>
+                )}
               </motion.button>
             </form>
           </motion.div>
