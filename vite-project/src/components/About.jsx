@@ -150,7 +150,7 @@ const About = () => {
               <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                href="/cv.pdf" // Remplace par le lien vers ton CV
+                href="/vite-project/public/Olivier Tiam CV.png" // Remplace par le lien vers ton CV
                 download
                 className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
               >

@@ -77,13 +77,13 @@ const Contact = () => {
     {
       icon: <Github size={24} />,
       name: 'GitHub',
-      url: 'https://github.com/oliviertiam',
+      url: 'https://github.com/OlivierTiam',
       color: 'hover:text-gray-300'
     },
     {
       icon: <Linkedin size={24} />,
       name: 'LinkedIn',
-      url: 'https://linkedin.com/in/oliviertiam',
+      url: 'https://www.linkedin.com/in/olivier-tiam-9598b121a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app',
       color: 'hover:text-blue-400'
     },
     {
@@ -92,6 +92,7 @@ const Contact = () => {
       url: 'https://twitter.com/oliviertiam',
       color: 'hover:text-blue-300'
     }
+    
   ];
 
   return (

@@ -212,9 +212,9 @@ const Hero = () => {
             className="flex justify-center gap-6"
           >
             {[
-              { icon: <Github size={24} />, url: "https://github.com", color: "hover:text-cyan-400" },
-              { icon: <Linkedin size={24} />, url: "https://linkedin.com", color: "hover:text-blue-400" },
-              { icon: <Mail size={24} />, url: "mailto:ton@email.com", color: "hover:text-green-400" }
+              { icon: <Github size={24} />, url: "https://github.com/OlivierTiam", color: "hover:text-cyan-400" },
+              { icon: <Linkedin size={24} />, url: "https://www.linkedin.com/in/olivier-tiam-9598b121a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app", color: "hover:text-blue-400" },
+              { icon: <Mail size={24} />, url: "oltiam36@gmail.com", color: "hover:text-green-400" }
             ].map((social, index) => (
               <motion.a
                 key={index}
